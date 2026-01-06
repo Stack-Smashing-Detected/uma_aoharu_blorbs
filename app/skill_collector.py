@@ -1,7 +1,8 @@
 import json as js
+import os
 import re
 
-from .SaveAndLoad import save_to_json, load_from_json
+from .SaveAndLoad import load_from_json
 from collections import Counter
 
 
@@ -32,11 +33,17 @@ based on its strategy or distance attribute.
 '''
 
 class SkillCollector:
-    def __init__(self, existing_data=False):
+    def __init__(self):
         # check if the saved_data directory is not empty first, if empty initialize it
-        self.existing_data = existing_data
+        self.existing_data = self.check_saved_data_exists("/saved_data")
         self.aoharu_skill_frequency_table = {}
-           
+        
+        if self.existing_data:
+            print("Existing data found, loading skill frequency table...")
+            self.load_existing_frequency_table("saved_data/skill_frequency_table.json")
+        else:
+            self.create_new_frequency_table()
+
     
     @property
     def skill_frequency_table(self):
@@ -45,6 +52,11 @@ class SkillCollector:
     @skill_frequency_table.setter
     def skill_frequency_table(self, new_table: dict):
         self.aoharu_skill_frequency_table = new_table
+        
+    @property
+    @existing_data.setter
+    def existing_data(self, value: bool):
+        self._existing_data = value
 
     def create_new_frequency_table(self):
         new_frequency_table = {
@@ -66,7 +78,19 @@ class SkillCollector:
         loaded_table = {category: Counter(data) for category, data in raw_table.items()}
         self.skill_frequency_table(loaded_table)
         
-    def add_skill(self, skill_name) -> str:
+    def get_specific_category_table(self, category: str) -> Counter:
+        '''
+        Returns the skill frequency table for a specific category.
+        
+        Parameters:
+        category (str): The category for which the skill frequency table is requested.
+        
+        Returns:
+        Counter: The skill frequency table for the specified category.
+        '''
+        return self.aoharu_skill_frequency_table.get(category, Counter())
+    
+    def add_skill(self, skill_name, freq=1) -> str:
         '''
         Gets a skill name then uses the data obtained from skill_meta.json to identify where the
         skill should be added to.
@@ -94,35 +118,68 @@ class SkillCollector:
         skill_conditions = self.parse_condition(skill_data['alternatives'][0]['condition']);
         if "ground_type" in skill_conditions:
             category = GROUND_TYPES.get(skill_conditions["ground_type"])
-            self.aoharu_skill_frequency_table[category][skill_name] += 1
+            self.aoharu_skill_frequency_table[category][skill_name] += freq
             return f"Skill '{skill_name}' added to {category} category."
         
         elif "distance_type" in skill_conditions:
             category = DISTANCE_TYPES.get(skill_conditions["distance_type"])
-            self.aoharu_skill_frequency_table[category][skill_name] += 1
+            self.aoharu_skill_frequency_table[category][skill_name] += freq
             return f"Skill '{skill_name}' added to {category} category."
 
         elif "running_style" in skill_conditions:
             category = RUNNING_STYLES.get(skill_conditions["running_style"])
-            self.aoharu_skill_frequency_table[category][skill_name] += 1
+            self.aoharu_skill_frequency_table[category][skill_name] += freq
             return f"Skill '{skill_name}' added to {category} category."
         
         else:
             return "Skill is non-category specific skill or does not exist in the game currently"
         
+    
+    def add_skills_from_file(self, filename: str) -> str:
+        '''
+        Reads skill names from a text file and adds them to the frequency table.
+        
+        Parameters:
+        filename (str): The name of the text file containing skill names.
+        
+        Returns: str: A message indicating the result of the operation.
+        '''
+        
+        skill_name = ''
+        skill_freq = 0
+        
+        try:
+            with open(filename, 'r') as file:
+                for line in file.readlines():
+                    match = re.match(r"^(.*?)(?:\s*(\d+))$", line.strip())
+                    if match:
+                        skill_name = match.group(1)
+                        skill_freq = int(match.group(2)) if match.group(2) else 1            
+
+            self.add_skill(skill_name, skill_freq)
+
+            return f"Skills from '{filename}' added successfully."
+        
+        except FileNotFoundError:
+            return f"File '{filename}' not found."
+          
         
     def parse_condition(self, condition: str) -> dict: 
         ''' The condition we are looking for will always be the first in the condition string'''
         
         conditions = {}
         for cond in condition.split("&"):
-            match = re.match(r"(\w+)(==|>=|<=|!=|<|>)(\d+)", cond)
+            match = re.match(r"(\w+)(==|>=|<=|!=|<|>)(\d+)", cond.strip())
             if match:
                 key, _, value = match.groups()
                 conditions[key] = int(value)
         
         # The first condition will always define the style, distance or track type the skill is exclusive to.
         return conditions
+
     
-    
-    
+    def check_saved_data_exists(self, path: str):
+        with os.scandir(path) as entries:
+            for entry in entries:
+                return True
+        return False

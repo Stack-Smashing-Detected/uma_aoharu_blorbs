@@ -1,3 +1,7 @@
 matplotlib==3.10.8
 pandas==2.3.3
 pyfiglet==1.0.4
+questionary==2.1.1
+six==1.17.0
+click==8.3.1
+
