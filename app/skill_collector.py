@@ -2,7 +2,7 @@ import json as js
 import os
 import re
 
-from .SaveAndLoad import load_from_json
+from app.save_and_load import SaveAndLoad
 from collections import Counter
 
 
@@ -35,7 +35,7 @@ based on its strategy or distance attribute.
 class SkillCollector:
     def __init__(self):
         # check if the saved_data directory is not empty first, if empty initialize it
-        self.existing_data = self.check_saved_data_exists("/saved_data")
+        self.existing_data = self.check_saved_data_exists("./saved_data")
         self.aoharu_skill_frequency_table = {}
         
         if self.existing_data:
@@ -52,11 +52,6 @@ class SkillCollector:
     @skill_frequency_table.setter
     def skill_frequency_table(self, new_table: dict):
         self.aoharu_skill_frequency_table = new_table
-        
-    @property
-    @existing_data.setter
-    def existing_data(self, value: bool):
-        self._existing_data = value
 
     def create_new_frequency_table(self):
         new_frequency_table = {
@@ -70,13 +65,13 @@ class SkillCollector:
                 "late_surger": Counter(),
                 "end_closer": Counter(),
             }
-        self.skill_frequency_table(new_frequency_table)
+        self.skill_frequency_table = new_frequency_table
         
     def load_existing_frequency_table(self, filename: str):
-        raw_table = load_from_json(filename)
+        raw_table = SaveAndLoad.load_from_json(filename)
         
         loaded_table = {category: Counter(data) for category, data in raw_table.items()}
-        self.skill_frequency_table(loaded_table)
+        self.skill_frequency_table = loaded_table
         
     def get_specific_category_table(self, category: str) -> Counter:
         '''

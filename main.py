@@ -1,19 +1,31 @@
 import argparse
+import os
 import questionary
+import six
 
 from prompt_toolkit.styles import Style
 from pyfiglet import figlet_format
+from rich.text import Text
+from rich.console import Console
 from app.bar_chart import BarChart
-from app.save_and_load import save_to_json
+from app.save_and_load import SaveAndLoad
 from app.skill_collector import SkillCollector
+
+
+def figlet_print(text: str, hex_color="#ffffff"):
+    figlet_text = figlet_format(text, font="slant")
+    styled_text = Text(figlet_text, style=f"{hex_color}")
+    console = Console()
+    console.print(styled_text)
+
 
 def main():
     running = True
-    f = Figlet(font='slant')
-    welcome_message = "Welcome to Uma Aoharu Blorbs! The app that shows how rigged the skill explosion mechanic is"
+    
+    welcome_message = Text("Welcome to Uma Aoharu Blorbs! The app that shows how rigged the skill explosion mechanic is", style="#dceb24")
     add_mode = "You are now in add mode. Please enter the skill name you wish to add: "
     file_mode = "You are now in file mode. Please enter the filename of the text file: "
-    draw_msg = "Drawing Frequency ar Chart, waiting for wit check to succeed..."
+    draw_msg = "Drawing Frequency Chart, waiting for wit check to succeed..."
     save_msg = "Skill frequency table saved successfully."
     quit_msg = "Exiting the application. Good Luck in your Runs!"
     
@@ -30,6 +42,9 @@ def main():
     
     # entering program loop here.
     skill_collector = SkillCollector()
+    print(figlet_print("Aoharu Skill Blorbs", "bold #40babf"))
+    print(welcome_message)
+    
     
     while(running):
         status = questionary.select(
@@ -37,10 +52,12 @@ def main():
         choices=[
             "Add Skill",
             "Add Skills from File",
-            "Draw Histogram",
+            "Draw Frequency Chart",
             "Save Skill Frequencies",
             "Quit"
-        ]).ask()
+        ],
+        style=style
+        ).ask()
         
         match status:
             case "Add Skill":
@@ -54,7 +71,7 @@ def main():
                 break
             case "Save Skill Frequencies":
                 print(save_msg)
-                save_to_json(skill_collector.aoharu_skill_frequency_table, "/saved_data/aoharu_skill_frequencies.json")
+                SaveAndLoad.save_to_json(skill_collector.aoharu_skill_frequency_table, "/saved_data/aoharu_skill_frequencies.json")
                 break
             case "Quit":
                 print(quit_msg)
@@ -97,7 +114,9 @@ def main():
                     "Late Surger",
                     "End Closer",
                     "Return to Main Menu"
-                ]).ask()
+                ],
+                style=style
+                ).ask()
 
             if graph_type == "Return to Main Menu":
                 break
@@ -106,9 +125,9 @@ def main():
                                      title=f"{graph_type} Aoharu Blorbs")
         
                 
-                
+if __name__ == "__main__":
+    main()
             
-        
         
     
     
