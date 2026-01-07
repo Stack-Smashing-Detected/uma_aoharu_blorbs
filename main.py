@@ -51,7 +51,7 @@ def main():
         "Select an option:",
         choices=[
             "Add Skill",
-            "Add Skills from File",
+            "Add Skills From File",
             "Draw Frequency Chart",
             "Save Skill Frequencies",
             "Quit"
@@ -62,21 +62,16 @@ def main():
         match status:
             case "Add Skill":
                 print(add_mode)
-                break
             case"Add Skills from File":
-                print(file_mode)     
-                break   
+                print(file_mode)        
             case "Draw Histogram":
                 print(draw_msg)
-                break
             case "Save Skill Frequencies":
                 print(save_msg)
-                SaveAndLoad.save_to_json(skill_collector.aoharu_skill_frequency_table, "/saved_data/aoharu_skill_frequencies.json")
-                break
+                SaveAndLoad.save_to_json(skill_collector.aoharu_skill_frequency_table, "./saved_data/aoharu_skill_frequencies.json")
             case "Quit":
                 print(quit_msg)
                 running = False;
-                break
            
         
         while status == "Add Skill":
@@ -89,12 +84,14 @@ def main():
             if not continue_adding:
                 break       
         
-        while status == "Add Skills from File":
+        while status == "Add Skills From File":
             filename = questionary.text("Enter Filename: ").ask()
-            fp_prefix = "/saved_data/"
+            print(filename)
+            fp_prefix = "./skill_textfiles/"
             filepath = fp_prefix + filename
+            print(filepath)
             result = skill_collector.add_skills_from_file(filepath)
-            
+            print(result)
             continue_adding = questionary.confirm("Do you want to add another file?").ask()
             if not continue_adding:
                 break       

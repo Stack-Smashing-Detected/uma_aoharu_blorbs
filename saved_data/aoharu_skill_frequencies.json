@@ -1,0 +1,28 @@
+{
+    "turf": {},
+    "dirt": {},
+    "sprint": {},
+    "medium": {
+        "Murmur": 2,
+        "Steadfast": 1,
+        "Thunderbolt Step": 1,
+        "Soft Step": 1,
+        "All I've Got": 1
+    },
+    "long": {
+        "Long Straightaways \u25cb": 1,
+        "Deep Breaths": 1,
+        "Passing Pro": 1,
+        "Extra Tank": 1
+    },
+    "front_runner": {},
+    "pace_chaser": {},
+    "late_surger": {
+        "1,500,000 CC": 2,
+        "A Small Breather": 2,
+        "Sharp Gaze": 1,
+        "Position Pilfer": 1,
+        "Outer Swell": 1
+    },
+    "end_closer": {}
+}

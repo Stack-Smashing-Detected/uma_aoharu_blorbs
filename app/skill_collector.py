@@ -40,7 +40,7 @@ class SkillCollector:
         
         if self.existing_data:
             print("Existing data found, loading skill frequency table...")
-            self.load_existing_frequency_table("saved_data/skill_frequency_table.json")
+            self.load_existing_frequency_table("./saved_data/aoharu_skill_frequencies.json")
         else:
             self.create_new_frequency_table()
 
@@ -68,10 +68,11 @@ class SkillCollector:
         self.skill_frequency_table = new_frequency_table
         
     def load_existing_frequency_table(self, filename: str):
-        raw_table = SaveAndLoad.load_from_json(filename)
+        with open(filename, "r", encoding="utf-8"):
+            raw_table = SaveAndLoad.load_from_json(filename)
         
-        loaded_table = {category: Counter(data) for category, data in raw_table.items()}
-        self.skill_frequency_table = loaded_table
+            loaded_table = {category: Counter(data) for category, data in raw_table.items()}
+            self.skill_frequency_table = loaded_table
         
     def get_specific_category_table(self, category: str) -> Counter:
         '''
@@ -85,7 +86,7 @@ class SkillCollector:
         '''
         return self.aoharu_skill_frequency_table.get(category, Counter())
     
-    def add_skill(self, skill_name, freq=1) -> str:
+    def add_skill(self, skill_name) -> str:
         '''
         Gets a skill name then uses the data obtained from skill_meta.json to identify where the
         skill should be added to.
@@ -95,14 +96,20 @@ class SkillCollector:
         
         Returns: str: A message indicating the result of the operation.
         '''
+        if "Corners" in skill_name or  "Straightaways" in skill_name:
+            skill_name += " ○"
+                            
+        with open("./skill_data/skill_data.json", "r", encoding="utf-8") as data_file:
+            skills_data = js.load(data_file)
         
-        skills_data = js.load("/skill_data/skill_data.json")
-        skill_names = js.load("/skill_data/skillnames.json")
+        with open("./skill_data/skillnames.json") as name_file:
+            skill_names = js.load(name_file)
+
         skill_id = ''
         
         # obtain the id of the skill from its name by iterating over "skill_names"
         for id in skill_names:
-            if(skill_names[id] == skill_name):
+            if(skill_names[id][0] == skill_name):
                 skill_id = id
                 break
         
@@ -113,17 +120,17 @@ class SkillCollector:
         skill_conditions = self.parse_condition(skill_data['alternatives'][0]['condition']);
         if "ground_type" in skill_conditions:
             category = GROUND_TYPES.get(skill_conditions["ground_type"])
-            self.aoharu_skill_frequency_table[category][skill_name] += freq
+            self.aoharu_skill_frequency_table[category][skill_name] += 1
             return f"Skill '{skill_name}' added to {category} category."
         
         elif "distance_type" in skill_conditions:
             category = DISTANCE_TYPES.get(skill_conditions["distance_type"])
-            self.aoharu_skill_frequency_table[category][skill_name] += freq
+            self.aoharu_skill_frequency_table[category][skill_name] += 1
             return f"Skill '{skill_name}' added to {category} category."
 
         elif "running_style" in skill_conditions:
             category = RUNNING_STYLES.get(skill_conditions["running_style"])
-            self.aoharu_skill_frequency_table[category][skill_name] += freq
+            self.aoharu_skill_frequency_table[category][skill_name] += 1
             return f"Skill '{skill_name}' added to {category} category."
         
         else:
@@ -141,17 +148,11 @@ class SkillCollector:
         '''
         
         skill_name = ''
-        skill_freq = 0
-        
         try:
             with open(filename, 'r') as file:
-                for line in file.readlines():
-                    match = re.match(r"^(.*?)(?:\s*(\d+))$", line.strip())
-                    if match:
-                        skill_name = match.group(1)
-                        skill_freq = int(match.group(2)) if match.group(2) else 1            
-
-            self.add_skill(skill_name, skill_freq)
+                for line in file.readlines():               
+                    print(self.add_skill(line.strip()))
+                    
 
             return f"Skills from '{filename}' added successfully."
         
