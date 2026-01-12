@@ -58,6 +58,7 @@ class SkillCollector:
                 "turf": Counter(),
                 "dirt": Counter(),
                 "sprint": Counter(),
+                "mile": Counter(),
                 "medium": Counter(),
                 "long": Counter(),
                 "front_runner": Counter(),
@@ -173,9 +174,25 @@ class SkillCollector:
         # The first condition will always define the style, distance or track type the skill is exclusive to.
         return conditions
 
+    def translate_choice_to_category(self, choice: str) -> str:
+        mapping = {
+            "Turf": "turf",
+            "Dirt": "dirt",
+            "Sprint": "sprint",
+            "Mile": "mile",
+            "Medium": "medium",
+            "Long": "long",
+            "Front Runner": "front_runner",
+            "Pace Chaser": "pace_chaser",
+            "Late Surger": "late_surger",
+            "End Closer": "end_closer",
+        }
+        return mapping.get(choice, "")
     
     def check_saved_data_exists(self, path: str):
         with os.scandir(path) as entries:
             for entry in entries:
                 return True
         return False
+    
+    

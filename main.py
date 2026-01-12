@@ -64,7 +64,7 @@ def main():
                 print(add_mode)
             case"Add Skills from File":
                 print(file_mode)        
-            case "Draw Histogram":
+            case "Draw Frequency Chart":
                 print(draw_msg)
             case "Save Skill Frequencies":
                 print(save_msg)
@@ -76,8 +76,7 @@ def main():
         
         while status == "Add Skill":
             skill_name = questionary.text("Enter Skill Name: ").ask()
-            freq = 1
-            result = skill_collector.add_skill(skill_name, freq)
+            result = skill_collector.add_skill(skill_name)
             print(result)
             
             continue_adding = questionary.confirm("Do you want to add another skill?").ask()
@@ -95,9 +94,9 @@ def main():
             continue_adding = questionary.confirm("Do you want to add another file?").ask()
             if not continue_adding:
                 break       
-        
-        
-        while status == "Draw Histogram":
+
+
+        while status == "Draw Frequency Chart":
             graph_type = questionary.select(
                 "Select Category:",
                 choices=[
@@ -118,9 +117,10 @@ def main():
             if graph_type == "Return to Main Menu":
                 break
             else:
-                bar_chart = BarChart(skill_collector.get_specific_category_data(graph_type), 
-                                     title=f"{graph_type} Aoharu Blorbs")
-        
+                graph_name = skill_collector.translate_choice_to_category(graph_type)
+                bar_chart = BarChart(skill_collector.get_specific_category_table(graph_name),"Aoharu Blorbs", graph_type)
+                bar_chart.plot_chart()
+                
                 
 if __name__ == "__main__":
     main()

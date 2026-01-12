@@ -2,6 +2,10 @@
     "turf": {},
     "dirt": {},
     "sprint": {},
+    "mile": {
+        "Opening Gambit": 1,
+        "Productive Plan": 1
+    },
     "medium": {
         "Murmur": 2,
         "Steadfast": 1,
@@ -16,13 +20,17 @@
         "Extra Tank": 1
     },
     "front_runner": {},
-    "pace_chaser": {},
+    "pace_chaser": {
+        "Hydrate": 1,
+        "Head-On": 1,
+        "Tactical Tweak": 1
+    },
     "late_surger": {
         "1,500,000 CC": 2,
         "A Small Breather": 2,
         "Sharp Gaze": 1,
         "Position Pilfer": 1,
-        "Outer Swell": 1
+        "Outer Swell": 3
     },
     "end_closer": {}
 }
