@@ -78,9 +78,13 @@ def main():
             skill_name = questionary.text("Enter Skill Name: ").ask()
             result = skill_collector.add_skill(skill_name)
             print(result)
-            
+
             continue_adding = questionary.confirm("Do you want to add another skill?").ask()
             if not continue_adding:
+                save_now = questionary.confirm("Do you want to save skill frequencies now?").ask()
+                if save_now:
+                    SaveAndLoad.save_to_json(skill_collector.aoharu_skill_frequency_table, "./saved_data/aoharu_skill_frequencies.json")
+                    print(save_msg)
                 break       
         
         while status == "Add Skills From File":
@@ -91,6 +95,12 @@ def main():
             print(filepath)
             result = skill_collector.add_skills_from_file(filepath)
             print(result)
+
+            save_now = questionary.confirm("Do you want to save skill frequencies now?").ask()
+            if save_now:
+                SaveAndLoad.save_to_json(skill_collector.aoharu_skill_frequency_table, "./saved_data/aoharu_skill_frequencies.json")
+                print(save_msg)
+
             continue_adding = questionary.confirm("Do you want to add another file?").ask()
             if not continue_adding:
                 break       
