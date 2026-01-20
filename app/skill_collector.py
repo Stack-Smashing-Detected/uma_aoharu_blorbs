@@ -97,7 +97,7 @@ class SkillCollector:
         
         Returns: str: A message indicating the result of the operation.
         '''
-        if "Corners" in skill_name or  "Straightaways" in skill_name:
+        if "Corners" in skill_name or  "Straightaways" in skill_name or "Savvy" in skill_name:
             skill_name += " ○"
                             
         with open("./skill_data/skill_data.json", "r", encoding="utf-8") as data_file:

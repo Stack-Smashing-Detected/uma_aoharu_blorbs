@@ -1,36 +1,81 @@
 {
     "turf": {},
     "dirt": {},
-    "sprint": {},
+    "sprint": {
+        "Huge Lead": 2,
+        "Wait-and-See": 3,
+        "Countermeasure": 2,
+        "Gap Closer": 1,
+        "Sprint Straightaways \u25cb": 2,
+        "Meticulous Measures": 3,
+        "Sprinting Gear": 2
+    },
     "mile": {
         "Opening Gambit": 1,
-        "Productive Plan": 1
+        "Productive Plan": 5,
+        "Acceleration": 1,
+        "Mile Corners \u25cb": 4,
+        "Updrafters": 3,
+        "Speed Eater": 3,
+        "Shifting Gears": 1,
+        "Mile Straightaways \u25cb": 1,
+        "Watchful Eye": 5,
+        "Unyielding Spirit": 1
     },
     "medium": {
-        "Murmur": 2,
-        "Steadfast": 1,
-        "Thunderbolt Step": 1,
-        "Soft Step": 1,
-        "All I've Got": 1
+        "Murmur": 7,
+        "Steadfast": 4,
+        "Thunderbolt Step": 2,
+        "Soft Step": 7,
+        "All I've Got": 5,
+        "Tether": 4,
+        "Medium Corners \u25cb": 2,
+        "Up-Tempo": 3,
+        "Medium Straightaways \u25cb": 2,
+        "Rosy Outlook": 7,
+        "Hawkeye": 1
     },
     "long": {
-        "Long Straightaways \u25cb": 1,
-        "Deep Breaths": 1,
-        "Passing Pro": 1,
-        "Extra Tank": 1
+        "Long Straightaways \u25cb": 11,
+        "Deep Breaths": 10,
+        "Passing Pro": 5,
+        "Extra Tank": 12,
+        "Stamina Eater": 8,
+        "Long Corners \u25cb": 8,
+        "Inside Scoop": 6,
+        "Keeping the Lead": 6,
+        "Smoke Screen": 7,
+        "Pressure": 3
     },
-    "front_runner": {},
+    "front_runner": {
+        "Final Push": 1,
+        "Second Wind": 1
+    },
     "pace_chaser": {
-        "Hydrate": 1,
-        "Head-On": 1,
-        "Tactical Tweak": 1
+        "Hydrate": 5,
+        "Head-On": 3,
+        "Tactical Tweak": 3,
+        "Shrewd Step": 1,
+        "Pace Chaser Corners \u25cb": 2,
+        "Disorient": 2,
+        "Stamina to Spare": 2,
+        "Prepared to Pass": 1,
+        "Preferred Position": 1,
+        "Straight Descent": 2
     },
     "late_surger": {
-        "1,500,000 CC": 2,
-        "A Small Breather": 2,
-        "Sharp Gaze": 1,
-        "Position Pilfer": 1,
-        "Outer Swell": 3
+        "1,500,000 CC": 14,
+        "A Small Breather": 15,
+        "Sharp Gaze": 13,
+        "Position Pilfer": 10,
+        "Outer Swell": 10,
+        "Late Surger Straightaways \u25cb": 14,
+        "Slick Surge": 9,
+        "Late Surger Savvy \u25cb": 16,
+        "Late Surger Corners \u25cb": 10,
+        "Fighter": 10,
+        "Be Still": 5,
+        "Studious": 9
     },
     "end_closer": {}
 }
