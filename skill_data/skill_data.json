@@ -7105,6 +7105,57 @@
         ],
         "rarity": 1
     },
+    "202002": {
+        "alternatives": [
+            {
+                "baseDuration": 0,
+                "condition": "ground_type==2&phase_random==1&order_rate>=50",
+                "effects": [
+                    {
+                        "modifier": 150,
+                        "target": 1,
+                        "type": 9
+                    }
+                ],
+                "precondition": ""
+            }
+        ],
+        "rarity": 1
+    },
+    "202011": {
+        "alternatives": [
+            {
+                "baseDuration": 24000,
+                "condition": "distance_type==4&phase_laterhalf_random==1&order_rate<=50",
+                "effects": [
+                    {
+                        "modifier": 3500,
+                        "target": 1,
+                        "type": 27
+                    }
+                ],
+                "precondition": ""
+            }
+        ],
+        "rarity": 2
+    },
+    "202012": {
+        "alternatives": [
+            {
+                "baseDuration": 24000,
+                "condition": "distance_type==4&phase_laterhalf_random==1&order_rate<=50",
+                "effects": [
+                    {
+                        "modifier": 1500,
+                        "target": 1,
+                        "type": 27
+                    }
+                ],
+                "precondition": ""
+            }
+        ],
+        "rarity": 1
+    },
     "202022": {
         "alternatives": [
             {
