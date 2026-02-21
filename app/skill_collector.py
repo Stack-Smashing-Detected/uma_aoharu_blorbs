@@ -35,25 +35,40 @@ based on its strategy or distance attribute.
 class SkillCollector:
     def __init__(self):
         # check if the saved_data directory is not empty first, if empty initialize it
-        self.existing_data = self.check_saved_data_exists("./saved_data")
         self.aoharu_skill_frequency_table = {}
+        self.mant_skill_frequency_table = {}
         
-        if self.existing_data:
-            print("Existing data found, loading skill frequency table...")
-            self.load_existing_frequency_table("./saved_data/aoharu_skill_frequencies.json")
+        if not self.check_json_not_empty("./saved_data/aoharu_skill_frequencies.json"):
+            self.aoharu_skill_frequency_table = self.create_new_frequency_table()
         else:
-            self.create_new_frequency_table()
+            print("Loading Aoharu Hai Skill Frequency Table...")
+            self.load_existing_frequency_table("./saved_data/aoharu_skill_frequencies.json")
+            
+        if not self.check_json_not_empty("./saved_data/mant_rival_race_skill_frequencies.json"):
+            self.mant_skill_frequency_table = self.create_new_frequency_table()
+        else:
+            print("Loading Make a New Track Skill Frequency Table...")
+            self.load_existing_frequency_table("./saved_data/mant_rival_race_skills_frequencies.json");                
+        
 
     
-    @property
-    def skill_frequency_table(self):
-        return self.aoharu_skill_frequency_table
+    def get_active_frequency_table(self, mode: str) -> dict:
+        match mode:
+            case "Aoharu Hai":
+                return self.aoharu_skill_frequency_table
+            case "Make a New Track":
+                return self.mant_skill_frequency_table
+        
+    def set_active_frequency_table(self, mode: str, new_table: dict):
+        match mode:
+            case "Aoharu Hai":
+                self.aoharu_skill_frequency_table = new_table
+            case "Make a New Track":
+                self.mant_skill_frequency_table = new_table
+        
+    
 
-    @skill_frequency_table.setter
-    def skill_frequency_table(self, new_table: dict):
-        self.aoharu_skill_frequency_table = new_table
-
-    def create_new_frequency_table(self):
+    def create_new_frequency_table(self) -> dict:
         new_frequency_table = {
                 "turf": Counter(),
                 "dirt": Counter(),
@@ -66,7 +81,7 @@ class SkillCollector:
                 "late_surger": Counter(),
                 "end_closer": Counter(),
             }
-        self.skill_frequency_table = new_frequency_table
+        return new_frequency_table
         
     def load_existing_frequency_table(self, filename: str):
         with open(filename, "r", encoding="utf-8"):
@@ -87,7 +102,7 @@ class SkillCollector:
         '''
         return self.aoharu_skill_frequency_table.get(category, Counter())
     
-    def add_skill(self, skill_name) -> str:
+    def add_skill(self, skill_name: str, active_table: dict) -> str:
         '''
         Gets a skill name then uses the data obtained from skill_meta.json to identify where the
         skill should be added to.
@@ -121,17 +136,17 @@ class SkillCollector:
         skill_conditions = self.parse_condition(skill_data['alternatives'][0]['condition']);
         if "ground_type" in skill_conditions:
             category = GROUND_TYPES.get(skill_conditions["ground_type"])
-            self.aoharu_skill_frequency_table[category][skill_name] += 1
+            active_table[category][skill_name] += 1
             return f"Skill '{skill_name}' added to {category} category."
         
         elif "distance_type" in skill_conditions:
             category = DISTANCE_TYPES.get(skill_conditions["distance_type"])
-            self.aoharu_skill_frequency_table[category][skill_name] += 1
+            active_table[category][skill_name] += 1
             return f"Skill '{skill_name}' added to {category} category."
 
         elif "running_style" in skill_conditions:
             category = RUNNING_STYLES.get(skill_conditions["running_style"])
-            self.aoharu_skill_frequency_table[category][skill_name] += 1
+            active_table[category][skill_name] += 1
             return f"Skill '{skill_name}' added to {category} category."
         
         else:
@@ -189,10 +204,10 @@ class SkillCollector:
         }
         return mapping.get(choice, "")
     
-    def check_saved_data_exists(self, path: str):
-        with os.scandir(path) as entries:
-            for entry in entries:
-                return True
-        return False
-    
-    
+    def check_json_not_empty(self, filename:str) -> bool:
+        with open(filename, "r", encoding="utf-8") as f:
+            try :
+                data = js.load(f)
+                return bool(data)  # returns False if the JSON is empty, True otherwise
+            except js.JSONDecodeError:
+                return False

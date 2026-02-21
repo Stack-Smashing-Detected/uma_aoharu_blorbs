@@ -22,12 +22,15 @@ def figlet_print(text: str, hex_color="#ffffff"):
 def main():
     running = True
     
-    welcome_message = Text("Welcome to Uma Aoharu Blorbs! The app that shows how rigged the skill explosion mechanic is", style="#dceb24")
+    welcome_message = Text("Welcome to Umaskill Umascam Umawatch! The app that reminds you that gamemode skill hints are cooked", style="#dceb24")
     add_mode = "You are now in add mode. Please enter the skill name you wish to add: "
     file_mode = "You are now in file mode. Please enter the filename of the text file: "
     draw_msg = "Drawing Frequency Chart, waiting for wit check to succeed..."
     save_msg = "Skill frequency table saved successfully."
     quit_msg = "Exiting the application. Good Luck in your Runs!"
+    current_mode = "Aoharu Hai"
+    mode_select_msg = "Select a Scenario"
+    file_path = "./saved_data/aoharu_skill_frequencies.json" # default scenario for this program is Aoharu Hai.
     
     style = Style([
         ("question", "#5eeadc"),
@@ -42,14 +45,17 @@ def main():
     
     # entering program loop here.
     skill_collector = SkillCollector()
-    print(figlet_print("Aoharu Skill Blorbs", "bold #40babf"))
+    print(figlet_print("Umaskill Umascam Umawatch", "bold #40babf"))
     print(welcome_message)
     
-    
+    active_table = skill_collector.get_active_frequency_table(current_mode)
     while(running):
+        # figure out how to show a select mode screen. 
+        print(f"Current Gamemode: {current_mode}")
         status = questionary.select(
         "Select an option:",
         choices=[
+            "Select Gamemode",
             "Add Skill",
             "Add Skills From File",
             "Draw Frequency Chart",
@@ -60,6 +66,8 @@ def main():
         ).ask()
         
         match status:
+            case "Select Gamemode":
+                print(mode_select_msg)
             case "Add Skill":
                 print(add_mode)
             case"Add Skills from File":
@@ -72,11 +80,39 @@ def main():
             case "Quit":
                 print(quit_msg)
                 running = False;
-           
-        
+                
+        while status == "Select Gamemode":
+            gamemode = questionary.select(
+                "Select Gamemode:",
+                choices=[
+                    "Aoharu Hai",
+                    "Make a New Track",
+                    "Return to Main Menu"
+                ],
+                style=style
+                ).ask()
+            
+            if gamemode == current_mode:
+                print(f"You are already in {current_mode} mode. Please select a different gamemode.")
+                continue
+            
+            
+            match gamemode:
+                case "Aoharu Hai":
+                    current_mode = "Aoharu Hai"
+                    filepath = "./saved_data/aoharu_skill_frequencies.json"
+
+                case "Make a New Track":
+                    current_mode = "Make a New Track"
+                    filepath = "./saved_data/mant_rival_race_skill_frequencies.json"
+                
+                case "Return to Main Menu":
+                    break
+            
+            
         while status == "Add Skill":
             skill_name = questionary.text("Enter Skill Name: ").ask()
-            result = skill_collector.add_skill(skill_name)
+            result = skill_collector.add_skill(skill_name, active_table)
             print(result)
 
             continue_adding = questionary.confirm("Do you want to add another skill?").ask()
